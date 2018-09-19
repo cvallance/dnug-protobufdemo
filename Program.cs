@@ -8,7 +8,15 @@ namespace DNUG.ProtobufDemoComplete
 {
     class Program
     {
+        private const string GarryFileName = "garry.dat";
+        
         static void Main(string[] args)
+        {
+            SimpleGarryWrite();
+            SimpleGarryRead();
+        }
+
+        private static void SimpleGarryWrite()
         {
             var garry = new Person
             {
@@ -23,16 +31,23 @@ namespace DNUG.ProtobufDemoComplete
                 LastUpdated = Timestamp.FromDateTime(DateTime.UtcNow)
             };
 
-            using (var output = File.Create("garry.dat"))
+            using (var output = File.Create(GarryFileName))
             {
                 garry.WriteTo(output);
             }
-
-            using (var input = File.OpenRead("garry.dat"))
+            
+            Console.WriteLine($"{garry.Name} written to {GarryFileName}");
+        }
+        
+        private static void SimpleGarryRead()
+        {
+            Person garry;
+            using (var input = File.OpenRead(GarryFileName))
             {
-                var garryAgain = Person.Parser.ParseFrom(input);
-                Console.WriteLine($"Itttttssss {garryAgain.Name}");
+                garry = Person.Parser.ParseFrom(input);
             }
+            
+            Console.WriteLine($"{garry.Name} read from {GarryFileName}");
         }
     }
 }
